@@ -6,3 +6,4 @@ pydantic
 httpx
 psutil
 redis
+paramiko
