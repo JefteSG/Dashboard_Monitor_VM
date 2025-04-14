@@ -1,4 +1,5 @@
-from fastapi import APIRouter, Depends
+import asyncio
+from fastapi import APIRouter, WebSocket, Depends
 from sqlalchemy.orm import Session
 from db import SessionLocal
 from models import VM, Monitoramento
@@ -9,7 +10,8 @@ from services import (
     get_disk_usage,         # Atualizado: função renomeada
     get_site_status,
     get_current_timestamp,
-    check_ssh_connection   # Para checar a conexão SSH com a VM
+    ssh_connection,
+    close_ssh_connection   # Para checar a conexão SSH com a VM
 )
 
 router = APIRouter()
@@ -21,56 +23,57 @@ def get_db():
     finally:
         db.close()
 
-@router.get("/monitor")
-async def monitor_vms(db: Session = Depends(get_db)):
-    """
-    Atualiza e retorna o status de todas as VMs cadastradas no banco de dados.
-    """
-    vms = db.query(VM).all()
-    response_data = []
+async def monitor_vms_ws(websocket: WebSocket, db: Session = Depends(get_db)):
+    await websocket.accept()
 
-    for vm in vms:
-        try:
-            # Checa a conexão SSH da VM
-            ssh_status = check_ssh_connection(vm.ip_address, vm.username, vm.password)
-            
-            # Se a conexão SSH for bem-sucedida, coleta os dados;
-            # caso contrário, deixa os valores como None (ou zero)
-            if ssh_status:
-                cpu = get_cpu_usage()       # Se necessário, adaptar para coleta remota
-                ram = get_ram_usage()
-                disk = get_disk_usage()     # Aqui usamos a função atualizada
-            else:
-                cpu, ram, disk = None, None, None
+    try:
+        while True:
+            vms = db.query(VM).all()
 
-            # Checa o status do site, se a URL estiver definida
-            site_status = await get_site_status(vm.site_url) if vm.site_url else False
+            async def process_vm(vm):
+                try:
+                    ssh_client = await asyncio.to_thread(ssh_connection, vm.ip_address, vm.username, vm.password)
 
-            # Cria o objeto de monitoramento para inserir no banco
-            monitor_data = MonitoramentoCreate(
-                vm_id=vm.id,
-                cpu_usage=cpu if cpu is not None else 0,
-                ram_usage=ram if ram is not None else 0,
-                disk_free=disk if disk is not None else 0,
-                site_status=site_status
-            )
-            
-            monitor_instance = Monitoramento(**monitor_data.dict())
-            db.add(monitor_instance)
-            db.commit()
-            
-            response_data.append({
-                "vm_name": vm.name,
-                "cpu_usage": cpu,
-                "ram_usage": ram,
-                "disk_usage": disk,
-                "site_status": site_status,
-                "ssh_status": ssh_status
-            })
-        except Exception as e:
-            response_data.append({
-                "vm_name": vm.name,
-                "error": str(e)
-            })
+                    if ssh_client:
+                        cpu = await asyncio.to_thread(get_cpu_usage, ssh_client)
+                        ram = await asyncio.to_thread(get_ram_usage, ssh_client)
+                        disk = await asyncio.to_thread(get_disk_usage, ssh_client)
 
-    return response_data
+                        await asyncio.to_thread(close_ssh_connection, ssh_client)
+                    else:
+                        cpu, ram, disk = None, None, None
+
+                    site_status = await get_site_status(vm.site_url) if vm.site_url else False
+
+                    return {
+                        "vm_name": vm.name,
+                        "cpu_usage": cpu,
+                        "ram_usage": ram,
+                        "disk_usage": disk,
+                        "site_status": site_status,
+                        "ssh_status": True if ssh_client else False,
+                        "ip": vm.ip_address,
+                        "user": vm.username,
+                        "password": vm.password,
+                        "site": vm.site_url
+                    }
+
+                except Exception as e:
+                    return {
+                        "vm_name": vm.name,
+                        "error": str(e)
+                    }
+
+            # Executa todas as VMs em paralelo
+            tasks = [process_vm(vm) for vm in vms]
+            response_data = await asyncio.gather(*tasks)
+
+            # Envia os dados pro frontend
+            await websocket.send_json(response_data)
+
+            await asyncio.sleep(5)
+
+    except Exception as e:
+        print(f"Erro na conexão WebSocket: {e}")
+    finally:
+        await websocket.close()

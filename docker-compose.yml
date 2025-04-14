@@ -14,7 +14,7 @@ services:
 
   backend:
     build:
-      context: .
+      context: ./backend
       dockerfile: Dockerfile
     container_name: fastapi_backend
     environment:
@@ -23,6 +23,18 @@ services:
       - "8000:8000"
     depends_on:
       - db
+    networks:
+      - monitor_net
+
+  frontend:
+    build:
+      context: ./dashboard vm
+      dockerfile: Dockerfile
+    container_name: dashboard_vm_front
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
     networks:
       - monitor_net
 
