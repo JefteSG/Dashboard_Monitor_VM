@@ -12,7 +12,7 @@ Este projeto é um dashboard para monitoramento em tempo real de máquinas virtu
 ## Tecnologias Utilizadas
 
 - **Backend**: FastAPI, WebSockets
-- **Dashbpard vm**: React, TypeScript, Vite
+- **Dashboard vm**: React, TypeScript, Vite
 - **Docker**: Docker Compose para facilitar a configuração e execução do ambiente
 
 ## Como Rodar o Projeto
@@ -54,7 +54,7 @@ Este projeto é um dashboard para monitoramento em tempo real de máquinas virtu
 ## Estrutura do Projeto
 
 - **backend/**: Contém o código do servidor FastAPI com WebSockets e integração com Redis.
-- **frontend/**: Código do cliente React, construído com Vite e TypeScript, responsável pela interface de usuário.
+- **dashboard vm/**: Código do cliente React, construído com Vite e TypeScript, responsável pela interface de usuário.
 - **docker-compose.yml**: Arquivo de configuração do Docker Compose para rodar todos os serviços.
 - **.env**: Arquivo de variáveis de ambiente para configuração do backend e frontend (se necessário).
 
