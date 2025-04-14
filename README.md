@@ -3,6 +3,8 @@
 
 Este projeto é um dashboard para monitoramento em tempo real de máquinas virtuais (VMs), construído com **FastAPI**, **WebSockets** no backend e **React com TypeScript** (Vite) no frontend.
 
+![Dashboard Preview](/dashboard%20vm/src/assets/dashboard.png)
+
 ## Funcionalidades
 
 - Monitoramento em tempo real de métricas das VMs.
