@@ -22,7 +22,7 @@ Este projeto é um dashboard para monitoramento em tempo real de máquinas virtu
 1. **Clone este repositório**:
 
    ```bash
-   git clone https://link-do-repositorio.git
+   git clone git@github.com:JefteSG/Dashboard_Monitor_VM.git
    cd nome-do-repositorio
    ```
 
