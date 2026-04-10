@@ -1,69 +1,68 @@
 
 # Dashboard de Monitoramento de VM
 
-Este projeto é um dashboard para monitoramento em tempo real de máquinas virtuais (VMs), construído com **FastAPI**, **WebSockets** no backend e **React com TypeScript** (Vite) no frontend.
+![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=flat&logo=typescript&logoColor=white)
+![Python](https://img.shields.io/badge/Python-3776AB?style=flat&logo=python&logoColor=white)
+![React](https://img.shields.io/badge/React-61DAFB?style=flat&logo=react&logoColor=black)
+![FastAPI](https://img.shields.io/badge/FastAPI-009688?style=flat&logo=fastapi&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-2496ED?style=flat&logo=docker&logoColor=white)
+![License](https://img.shields.io/badge/license-MIT-green)
+![Last Commit](https://img.shields.io/github/last-commit/JefteSG/Dashboard_Monitor_VM)
 
-![Dashboard Preview](/dashboard%20vm/src/assets/dashboard.png)
+**Dashboard de métricas de VMs com alertas em tempo real**
 
-## Funcionalidades
+![Dashboard Preview](dashboard%20vm/src/assets/dashboard.png)
 
-- Monitoramento em tempo real de métricas das VMs.
-- Interface interativa e responsiva para visualização de dados.
-- Comunicação bidirecional utilizando **WebSockets** para dados em tempo real.
+## 🚀 Como Rodar
 
-## Tecnologias Utilizadas
+```bash
+git clone git@github.com:JefteSG/Dashboard_Monitor_VM.git
+cd Dashboard_Monitor_VM
+docker-compose up --build
+```
 
-- **Backend**: FastAPI, WebSockets
-- **Dashboard vm**: React, TypeScript, Vite
-- **Docker**: Docker Compose para facilitar a configuração e execução do ambiente
+Acesse em: **http://localhost:3000**
 
-## Como Rodar o Projeto
+## 🎯 Decisões Técnicas
 
-1. **Clone este repositório**:
+### Por que TypeScript?
+- **Type safety** — erros capturados em tempo de compilação, não em produção
+- **Melhor DX** — autocomplete e refatoração segura no VSCode
+- **Manutenibilidade** — código autodocumentado com interfaces explícitas
 
-   ```bash
-   git clone git@github.com:JefteSG/Dashboard_Monitor_VM.git
-   cd nome-do-repositorio
-   ```
+### Por que FastAPI?
+- **Performance** — async nativo e um dos frameworks Python mais rápidos
+- **WebSockets out-of-the-box** — essencial para streaming de métricas em tempo real
+- **Documentação automática** — Swagger/OpenAPI gerado automaticamente
 
-2. **Configure o ambiente Docker**:
+### Stack Escolhida
+- **Frontend**: React + TypeScript + Vite — build rápido e HMR instantâneo
+- **Backend**: FastAPI + WebSockets — comunicação bidirecional para métricas em tempo real
+- **Infraestrutura**: Docker Compose — ambiente reproduzível em qualquer máquina
 
-   Na raiz do projeto, existe um arquivo `docker-compose.yml` que configura todos os serviços necessários, incluindo o backend, o frontend e o Redis.
+## 📦 Funcionalidades
 
-3. **Suba os containers com Docker Compose**:
+- Monitoramento em tempo real de CPU, memória e disco das VMs
+- Alertas automáticos configuráveis por métrica
+- Comunicação bidirecional via WebSockets
+- Interface responsiva e intuitiva
 
-   Execute o comando abaixo para iniciar o projeto:
+## 📁 Estrutura do Projeto
 
-   ```bash
-   docker-compose up --build
-   ```
+```
+├── backend/              # FastAPI + WebSockets
+├── dashboard vm/         # React + TypeScript + Vite
+└── docker-compose.yml    # Orquestração de serviços
+```
 
-   Este comando vai:
+## 🤝 Como Contribuir
 
-   - Criar e iniciar os containers para o frontend e backend.
-   - Configurar o Redis para a comunicação entre o frontend e o backend.
+1. Faça um fork do projeto
+2. Crie uma branch para sua feature (`git checkout -b feature/nova-funcionalidade`)
+3. Commit suas mudanças (`git commit -m 'Adiciona nova funcionalidade'`)
+4. Push para a branch (`git push origin feature/nova-funcionalidade`)
+5. Abra um Pull Request
 
-4. **Acesse o projeto**:
-
-   Após o Docker Compose iniciar todos os containers, você pode acessar o dashboard em:
-
-   ```
-   http://localhost:3000
-   ```
-
-   A interface estará disponível para você começar a interagir com os dados das VMs.
-
-## Estrutura do Projeto
-
-- **backend/**: Contém o código do servidor FastAPI com WebSockets e integração com Redis.
-- **dashboard vm/**: Código do cliente React, construído com Vite e TypeScript, responsável pela interface de usuário.
-- **docker-compose.yml**: Arquivo de configuração do Docker Compose para rodar todos os serviços.
-- **.env**: Arquivo de variáveis de ambiente para configuração do backend e frontend (se necessário).
-
-## Como Contribuir
-
-Se você deseja contribuir para o projeto, fique à vontade para fazer um fork do repositório e enviar um pull request com suas melhorias. Para novos recursos ou correções de bugs, abra uma **issue**.
-
-## Licença
+## 📄 Licença
 
 Este projeto está licenciado sob a [MIT License](LICENSE).
